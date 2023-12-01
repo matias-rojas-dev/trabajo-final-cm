@@ -18,7 +18,7 @@ La aplicación "Nature Guard" aborda directamente varios aspectos del Objetivo d
 ### Ejecución
 
 ## ✅ Check de requerimientos solicitados
-- [ ] Sistema login
+- [x] Sistema login
 - [x] Código organizado por carpetas
 - [ ] Uso de interfaces
 - [ ] Manejo de errores
