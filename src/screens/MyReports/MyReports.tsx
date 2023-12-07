@@ -1,15 +1,32 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
+import React from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  ImageSourcePropType
+} from 'react-native'
+import { IMGPBird } from '../../utils/imports/imports'
 
-// Datos de ejemplo para los reportes
-const reportsData = [
+interface ReportProps {
+  id: string
+  name: string
+  category: string
+  coordinates: string,
+  date: string
+  imageUrl: ImageSourcePropType
+}
+
+const reportsData: ReportProps[] = [
   {
     id: '1',
     name: 'Rayadito',
     category: 'Fauna/Aves',
     coordinates: '33.420938, -70.603813',
     date: 'Último avistamiento el 09/11/2023',
-    imageUrl: 'path-to-your-bird-image.jpg' // Cambia esto por la ruta real de tu imagen
+    imageUrl: IMGPBird,
   },
   {
     id: '2',
@@ -17,10 +34,9 @@ const reportsData = [
     category: 'Fauna/Aves',
     coordinates: '33.386930, -70.608393',
     date: 'Último avistamiento el 27/11/2022',
-    imageUrl: 'path-to-your-bird-image.jpg' // Cambia esto por la ruta real de tu imagen
+    imageUrl: IMGPBird,
   },
-  // ... más reportes
-];
+]
 
 const MyReports = () => {
   return (
@@ -31,7 +47,7 @@ const MyReports = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.reportItem}>
-            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+            <Image source={item.imageUrl} style={styles.image} />
             <View style={styles.infoContainer}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.details}>{item.category}</Text>
@@ -45,18 +61,17 @@ const MyReports = () => {
         <Text style={styles.downloadButtonText}>Descargar reporte</Text>
       </TouchableOpacity>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
+    backgroundColor: '#F7F7F7',
+    padding: 22,
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
   },
@@ -96,6 +111,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-});
+})
 
-export default MyReports;
+export default MyReports

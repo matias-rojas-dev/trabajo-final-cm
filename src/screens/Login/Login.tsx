@@ -24,7 +24,7 @@ const Login = ({ navigation }) => {
           text="Regístrate"
           buttonStyle={styles.buttonRegister}
           textStyle={styles.textRegister}
-          onPress={() => {/* función para registrarse */ }}
+          onPress={() => navigation.navigate('LoginAndSignUp')}
         />
       </View>
     </View>
