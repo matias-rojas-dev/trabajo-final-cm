@@ -1,12 +1,15 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { LOGOIMG } from '../../imports/images.imports'
+import { getAuth } from 'firebase/auth'
 
 const WelcomeScreen = () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
   return (
     <View style={styles.container}>
       <Image source={LOGOIMG} style={styles.logo} />
-      <Text style={styles.greeting}>👋 ¡HOLA, SERGIO!</Text>
+      <Text style={styles.greeting}>👋 HOLA, {user?.displayName?.toUpperCase() || 'USUARIO'}!</Text>
       <Text style={styles.question}>¿QUÉ DESCUBRIREMOS HOY?</Text>
     </View>
   )
@@ -21,8 +24,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    width: 150, // Ajusta esto según el tamaño de tu imagen
-    height: 150, // Ajusta esto según el tamaño de tu imagen
+    width: 150,
+    height: 150, 
     resizeMode: 'contain',
     marginBottom: 20,
   },
@@ -38,10 +41,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   swiper: {
-    height: 200, // Ajusta la altura como sea necesario
-    width: '100%', // Ajusta el ancho como sea necesario
+    height: 200, 
+    width: '100%', 
   },
-  // Agrega estilos adicionales para cada slide del Swiper aquí si es necesario
 })
 
 export default WelcomeScreen

@@ -26,7 +26,7 @@ const speciesDetails: SpeciesDetails[] = [{
   condition: 'Silvestre',
   status: 'Preocupación menor (LC)',
   lastSeen: '09/11/2023',
-  imageUrl: 'path-to-your-species-image.jpg', // Cambia esto por la ruta real de tu imagen
+  imageUrl: 'path-to-your-species-image.jpg',
 }]
 
 export const SpeciesDetails: React.FC = () => {
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
 
   image: {
     width: '100%',
-    height: 300, // Ajustar según la imagen
+    height: 300,
   },
   detailsContainer: {
     backgroundColor: '#fff',
@@ -87,13 +87,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
-    width: 120, // Ajustar según el diseño
+    width: 120,
   },
   value: {
     flex: 1,
   },
   reportButton: {
-    backgroundColor: '#4CAF50', // Ajustar el color según el diseño
+    backgroundColor: '#4CAF50',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,

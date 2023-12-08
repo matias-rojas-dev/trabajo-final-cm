@@ -14,12 +14,17 @@ export const StartScreen = ({ navigation }) => {
         <Image source={LOGOIMG} style={styles.logo} />
       </View>
       <View style={styles.buttonContainer}>
-
         <Button
-          text="¡Bienvenid@!"
+          text="Iniciar Sesión"
+          buttonStyle={styles.buttonLogin}
+          textStyle={styles.buttonText}
+          onPress={() => navigation.navigate('LoginScreen')}
+        />
+        <Button
+          text="Registrarse"
           buttonStyle={styles.buttonRegister}
           textStyle={styles.textRegister}
-          onPress={() => navigation.navigate('LoginScreen')}
+          onPress={() => navigation.navigate('SignScreen')}
         />
       </View>
     </View>

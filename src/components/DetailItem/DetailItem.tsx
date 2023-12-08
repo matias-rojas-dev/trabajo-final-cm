@@ -18,7 +18,7 @@ const DetailItem = ({ label, name }: DetailItemProps) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // This will align the label to the left and the name to the right
+    justifyContent: 'space-between',
     padding: 10,
   },
   label: {
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: '45%',
     textAlign: 'left',
     fontSize: 16,
-    color: '#555', // Adjust color to match image 2
+    color: '#555',
   },
 });
 

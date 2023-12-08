@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { initializeApp } from 'firebase/app'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { FirebaseApp } from 'firebase/app'
-import { firebaseConfig } from '../services/firebaseConfig'
+import { app } from '../services/firebaseConfig';
 import Button from '../components/Button/Button'
 
 
@@ -13,26 +13,14 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('')
   const navigation = useNavigation()
 
-  const app = initializeApp(firebaseConfig)
   const auth = getAuth(app)
-
-  const handleGoToRegister = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        console.log('Account created')
-        console.log(auth)
-        navigation.navigate('SpeciesDetails')
-      }).catch(error => {
-        console.log('No es posible registrar su usuario. Error: ', error)
-      })
-  }
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         console.log('Account created')
         console.log(auth)
-        navigation.navigate('SpeciesDetails')
+        navigation.navigate('Home')
       }).catch(error => {
         console.log('No es posible iniciar sesión. Error: ', error)
         alert(error.message)
@@ -67,14 +55,7 @@ const LoginScreen: React.FC = () => {
           textStyle={{ color: '#000' }}
           onPress={handleLogin}
         />
-        <Button
-          text="Regístrate"
-          buttonStyle={styles.buttonRegister}
-          textStyle={styles.textRegister}
-          onPress={handleGoToRegister}
-        />
       </View>
-
     </View>
   )
 }
@@ -134,7 +115,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 10, // Adjust the margin as necessary
+    marginBottom: 10,
     width: '100%'
   },
   buttonRegister: {
