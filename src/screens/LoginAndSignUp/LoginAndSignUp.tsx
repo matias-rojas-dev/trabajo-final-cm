@@ -1,38 +1,82 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import Button from '../../components/Button/Button';
+import React, { useState } from 'react'
+import { initializeApp } from 'firebase/app'
+import { View, Text, TextInput, StyleSheet } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import Button from '../../components/Button/Button'
+import { firebaseConfig } from '../../services/firebaseConfig'
 
-const LoginAndSignUp: React.FC = ({ navigation }) => {
+
+export const LoginAndSignUp: React.FC = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const navigation = useNavigation()
+
+  const app = initializeApp(firebaseConfig)
+  const auth = getAuth(app)
+
+  const handleGoToRegister = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        console.log('Account created')
+        console.log(auth)
+        // navigation.navigate('SpeciesDetail')
+      }).catch(error => {
+        console.log('No es posible registrar su usuario. Error: ', error)
+      })
+  }
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        console.log('Account created')
+        console.log(auth)
+        // navigation.navigate('SpeciesDetail')
+      }).catch(error => {
+        console.log('No es posible iniciar sesión. Error: ', error)
+        alert(error.message)
+      })
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>BIENVENIDO A</Text>
-      <Text style={styles.subtitle}>Nature Guard</Text>
+      <View style={styles.titlesContainer}>
+        <Text style={styles.title}>BIENVENIDO A</Text>
+        <Text style={styles.subtitle}>Nature Guard</Text>
+      </View>
       <TextInput
-        placeholder="E-mail"
         style={styles.input}
+        placeholder="E-mail"
+        value={email}
+        onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-
       <TextInput
-        placeholder="Contraseña"
-        secureTextEntry
         style={styles.input}
+        placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
       />
-
-
       <View style={styles.buttonContainer}>
         <Button
           text="Inicia Sesión"
           buttonStyle={styles.buttonLogin}
           textStyle={{ color: '#000' }}
-          onPress={() => navigation.navigate('Loading')}
+          onPress={handleLogin}
         />
-
+        <Button
+          text="Regístrate"
+          buttonStyle={styles.buttonRegister}
+          textStyle={styles.textRegister}
+          onPress={handleGoToRegister}
+        />
       </View>
+
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -42,23 +86,37 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  titlesContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    paddingLeft: 22,
+    paddingTop: 60
+  },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 25,
+    color: '#333',
+    marginBottom: - 10
   },
   subtitle: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 32,
+    color: '#5d9398',
   },
   input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 20,
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 16,
+    fontSize: 16,
+    width: '80%'
+  },
+  button: {
+    backgroundColor: '#00ACEE',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: 'column',
@@ -75,7 +133,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 10, // Adjust the margin as necessary
+    marginBottom: 10,
     width: '100%'
   },
   buttonRegister: {
@@ -85,27 +143,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '100%'
   },
-  button: {
-    backgroundColor: '#009688',
-    padding: 12,
-    borderRadius: 5,
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
   buttonText: {
-    color: '#fff',
+    textAlign: 'center',
+    color: '#000',
     fontSize: 16,
-    fontWeight: 'bold',
   },
-  buttonOutline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#009688',
-  },
-  buttonOutlineText: {
-    color: '#009688',
-  },
-});
-
-export default LoginAndSignUp;
+  textRegister: {
+    color: '#FFFFFF',
+  }
+})

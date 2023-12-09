@@ -1,9 +1,9 @@
 import React from 'react'
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { IMGLogin } from './imports/imports'
+import { Text, View, StyleSheet, Image } from 'react-native'
+import { LOGOIMG } from '../../imports/images/images.imports'
 import Button from '../../components/Button/Button'
 
-const Login = ({ navigation }) => {
+export const StartScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titlesContainer}>
@@ -11,17 +11,11 @@ const Login = ({ navigation }) => {
         <Text style={styles.subtitle}>Nature Guard</Text>
       </View>
       <View style={styles.logoContainer}>
-        <Image source={IMGLogin} style={styles.logo} />
+        <Image source={LOGOIMG} style={styles.logo} />
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          text="Inicia Sesión"
-          buttonStyle={styles.buttonLogin}
-          textStyle={{ color: '#000' }}
-          onPress={() => navigation.navigate('Loading')}
-        />
-        <Button
-          text="Regístrate"
+          text="¡Bienvenid@!"
           buttonStyle={styles.buttonRegister}
           textStyle={styles.textRegister}
           onPress={() => navigation.navigate('LoginAndSignUp')}
@@ -101,5 +95,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Login
 
