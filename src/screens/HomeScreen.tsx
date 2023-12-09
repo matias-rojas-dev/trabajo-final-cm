@@ -6,6 +6,7 @@ import { collection, query, getDocs } from 'firebase/firestore';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import SpeciesList from '../components/SpeciesList';
+import { StyleSheet, Dimensions } from 'react-native';
 
 const HomeScreen = () => {
   const [location, setLocation] = useState({
@@ -74,5 +75,37 @@ const HomeScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.5,
+  },
+  speciesList: {
+    flex: 1,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  button: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: '#ddd',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default HomeScreen;
