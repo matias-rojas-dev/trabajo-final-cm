@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 
 interface DetailItemProps {
   label: string
@@ -12,13 +12,13 @@ const DetailItem = ({ label, name }: DetailItemProps) => {
       <Text style={styles.label}> {label} </Text>
       <Text style={styles.value}> {name} </Text>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // This will align the label to the left and the name to the right
+    justifyContent: 'space-between',
     padding: 10,
   },
   label: {
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555', // Adjust color to match image 2
   },
-});
+})
 
-export default DetailItem;
+export default DetailItem

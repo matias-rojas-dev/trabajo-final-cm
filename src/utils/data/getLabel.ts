@@ -11,6 +11,7 @@ export const getLabel = (fieldName: string): string => {
     type: 'Tipo',
     lastsighting: 'Última Vista',
     location: 'Ubicación',
+    image: 'Imagen',
   }
 
   return labels[fieldName] || fieldName

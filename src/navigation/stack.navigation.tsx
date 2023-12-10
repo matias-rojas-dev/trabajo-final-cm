@@ -5,6 +5,7 @@ import { LoginAndSignUp } from '../screens/LoginAndSignUp/LoginAndSignUp'
 import { SpeciesDetail } from '../screens/SpeciesDetail/SpeciesDetail'
 import { MainScreen } from '../screens/Main/MainScreen'
 import { FormScreen } from '../screens/Form/FormScreen'
+import { CameraContainer } from '../components/Camera/CameraContainer'
 
 const Stack = createNativeStackNavigator()
 
@@ -35,6 +36,11 @@ export const StackNavigator = () => {
         name="SpeciesDetail"
         component={SpeciesDetail}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CameraContainer"
+        component={CameraContainer}
+        options={{ headerTitle: 'Camera' }}
       />
     </Stack.Navigator>
   )

@@ -31,7 +31,7 @@ export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
 
   return (
     <View>
-      <Image source={IMGPBird} style={styles.image} />
+      <Image source={{ uri: sighting.image }} style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text style={styles.commonName}>{sighting.name}</Text>
         <View style={styles.lineStyle}></View>

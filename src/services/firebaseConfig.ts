@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import Constants from 'expo-constants'
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
+import uuid from 'react-native-uuid'
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyD5bxH5KX_y93uxXzYE7JRfPIEKR3sxqDo',
@@ -13,5 +14,19 @@ export const firebaseConfig = {
 }
 
 initializeApp(firebaseConfig)
+
+const storage = getStorage(initializeApp(firebaseConfig))
+
+export async function uploadFile(fileUri: string): Promise<string> {
+  const response = await fetch(fileUri)
+  const blob = await response.blob()
+
+  const storageRef = ref(storage, uuid.v4())
+
+  const snapshot = await uploadBytes(storageRef, blob)
+  const uriFile = await getDownloadURL(snapshot.ref)
+
+  return uriFile // This will return the download URL
+}
 
 export const database = getFirestore()

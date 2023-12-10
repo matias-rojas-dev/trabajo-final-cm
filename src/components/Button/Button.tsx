@@ -19,8 +19,6 @@ const Button: React.FC<Props> = ({ text, buttonStyle, textStyle, onPress }) => {
 const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     width: '100%',
     marginBottom: 10, // Ajusta el margen según sea necesario
   },

@@ -17,4 +17,5 @@ export interface ISighting {
   region: string
   scientificname: string
   type: string
+  image: string
 }

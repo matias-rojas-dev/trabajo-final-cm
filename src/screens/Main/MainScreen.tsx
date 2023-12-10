@@ -13,11 +13,15 @@ import { database } from '../../services/firebaseConfig'
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { SightingItem } from '../../components/SightingItem/SightinItem'
 import { ISighting } from '../../interfaces/sighting.interface'
+import { SightingItemSkeleton } from '../../components/SightingItem/SightinItemSkeleton'
 
 export const MainScreen: React.FC = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [items, setItems] = useState<ISighting[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  // TODO: Quitar el loading cuando la imagen haya cargado correctamente
+  const [imageLoading, setImageLoading] = useState(true)
+
   const [markers, setMarkers] = useState([
     {
       latitude: -33.437,
@@ -86,7 +90,7 @@ export const MainScreen: React.FC = ({ navigation }) => {
           />
         </View>
         {loading ? (
-          <ActivityIndicator size="large" color="#5d9398" />
+          [0, 1, 2].map((index) => <SightingItemSkeleton key={index} />)
         ) : (
           <ScrollView style={styles.scrollView}>
             {filteredSightings.map((sighting) => (
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
   addButton: {
     position: 'absolute',
     right: 20,
-    bottom: '55%', // Adjust the position as needed
+    bottom: '55%',
     backgroundColor: '#5d9398',
     borderRadius: 25,
     width: 50,
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#FFFFFF',
     fontSize: 24,
-    lineHeight: 50, // This should be the same as your button height to vertically align the text
+    lineHeight: 50,
   },
   map: {
     height: '50%',
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   scrollView: {
-    backgroundColor: 'white',
+    backgroundColor: '#F7F7F7',
   },
   sightingItem: {
     flexDirection: 'row',
@@ -140,16 +144,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollViewContainer: {
+    backgroundColor: '#F7F7F7',
     position: 'absolute',
     top: '50%',
     width: '100%',
-    height: '50%',
   },
   searchContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#F7F7F7',
     justifyContent: 'flex-end',
   },
   input: {
@@ -160,40 +164,5 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginTop: 10,
-  },
-  searchButton: {
-    backgroundColor: '#5d9398',
-    borderRadius: 20,
-    padding: 10,
-  },
-  sightingImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  sightingInfo: {
-    flex: 1,
-    paddingHorizontal: 5,
-  },
-  sightingName: {
-    fontWeight: 'bold',
-  },
-  sightingDetails: {
-    fontSize: 12,
-  },
-  reportButton: {
-    backgroundColor: '#5d9398',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    width: '30%',
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: '#000',
-    fontSize: 16,
-  },
-  textButton: {
-    color: '#FFFFFF',
   },
 })

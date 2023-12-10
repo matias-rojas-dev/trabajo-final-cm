@@ -7,31 +7,33 @@ import {
   Text,
   Button as RNButton,
   Alert,
+  Image,
 } from 'react-native'
 import { ISighting } from '../../interfaces/sighting.interface'
 import { Input } from '../../components/Input/Input'
 import { getLabel } from '../../utils/data/getLabel'
 import Button from '../../components/Button/Button'
 import { addDoc, collection } from 'firebase/firestore'
-import { database } from '../../services/firebaseConfig'
+import { database, uploadFile } from '../../services/firebaseConfig'
 import { useNavigation } from '@react-navigation/native'
 import * as Location from 'expo-location'
 import useLocation from '../../hooks/useLocation'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export const FormScreen: React.FC = () => {
   const navigation = useNavigation()
   const { location, error: locationError, getLocationRegion } = useLocation()
-
+  const [imageUri, setImageUri] = useState<string>('')
   const [sighting, setSighting] = useState<ISighting>({
-    worry: '',
-    belonging: '',
-    class: '',
-    condition: '',
-    family: '',
-    name: '',
-    region: '',
-    scientificname: '',
-    type: '',
+    worry: 'sdfh',
+    belonging: 'dfh',
+    class: 'sdfh',
+    condition: 'shdfh',
+    family: 'sdfh',
+    name: 'qwet',
+    region: 'qwet',
+    scientificname: 'qwet',
+    type: 'qwet',
     lastsighting: {
       seconds: 0,
       nanoseconds: 0,
@@ -40,15 +42,27 @@ export const FormScreen: React.FC = () => {
       latitude: 0,
       longitude: 0,
     },
+    image: '',
   })
 
   const handleChange = (name: keyof ISighting) => (value: string) => {
     setSighting((prevSighting) => ({ ...prevSighting, [name]: value }))
   }
 
+  const handlePhotoCaptured = (uri: string) => {
+    setImageUri(uri)
+  }
+
   const handleSubmit = async () => {
     try {
-      await addDoc(collection(database, 'florayfauna'), sighting)
+      const uriFile = await uploadFile(imageUri)
+      setSighting((prevSighting) => ({ ...prevSighting, image: uriFile }))
+
+      const docRef = await addDoc(collection(database, 'florayfauna'), {
+        ...sighting,
+        image: uriFile,
+      })
+
       Alert.alert('Éxito', 'Avistamiento registrado con éxito.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ])
@@ -81,6 +95,22 @@ export const FormScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Text style={styles.title}>Reportar Avistamiento</Text>
+      {imageUri ? (
+        <View style={styles.containerPreviewImage}>
+          <Image source={{ uri: imageUri }} style={styles.capturedImage} />
+        </View>
+      ) : (
+        <TouchableOpacity
+          style={styles.cameraButton}
+          onPress={() =>
+            navigation.navigate('CameraContainer', {
+              onPhotoCaptured: handlePhotoCaptured,
+            })
+          }
+        >
+          <Text style={styles.cameraButtonText}>Open Camera</Text>
+        </TouchableOpacity>
+      )}
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           {Object.keys(sighting).map((key, index) => {
@@ -111,7 +141,17 @@ export const FormScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff', // o el color de fondo que prefieras
+  },
+  containerPreviewImage: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 13,
+  },
+  capturedImage: {
+    width: '80%',
+    aspectRatio: 1,
+    resizeMode: 'contain',
   },
   preview: {
     flex: 1,
@@ -129,7 +169,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     margin: 20,
   },
-  cameraButton: {},
+  cameraButton: {
+    backgroundColor: '#5d9398',
+    padding: 10,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginVertical: 10, // Adjust as needed
+  },
+  cameraButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
   title: {
     color: '#000',
     fontSize: 24,
