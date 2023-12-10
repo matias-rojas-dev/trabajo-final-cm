@@ -1,74 +1,68 @@
-import React from 'react'
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet, Image, Text, ActivityIndicator } from 'react-native'
 import { IMGPBird } from '../../utils/imports/imports'
 import DetailItem from '../../components/DetailItem/DetailItem'
 import Button from '../../components/Button/Button'
+import { ISighting } from '../../interfaces/sighting.interface'
+import { RouteProp } from '@react-navigation/native'
 
-interface SpeciesDetails {
-  commonName: string
-  scientificName: string
-  class: string
-  family: string
-  location: string
-  ownership: string
-  condition: string
-  status: string
-  lastSeen: string
-  imageUrl: string
+type SpeciesDetailRouteProp = RouteProp<
+  { SpeciesDetail: { sighting: ISighting } },
+  'SpeciesDetail'
+>
+
+interface SpeciesDetailProps {
+  route: SpeciesDetailRouteProp
 }
+export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
+  const { sighting } = route.params
 
-const speciesDetails: SpeciesDetails[] = [
-  {
-    commonName: 'Rayadito 3',
-    scientificName: 'Curaeus curaeus 2',
-    class: 'Aves',
-    family: 'Icteridae',
-    location: 'Cerro San Cristóbal',
-    ownership: 'Nativa',
-    condition: 'Silvestre',
-    status: 'Preocupación menor (LC)',
-    lastSeen: '09/11/2023',
-    imageUrl: 'path-to-your-species-image.jpg', // Cambia esto por la ruta real de tu imagen
-  },
-]
+  const [isLoading, setIsLoading] = useState(true)
 
-export const SpeciesDetail: React.FC = () => {
+  useEffect(() => {
+    if (sighting) {
+      setIsLoading(false)
+    }
+  }, [sighting])
+
+  if (isLoading) {
+    return <ActivityIndicator size="large" color="#0000ff" />
+  }
+
   return (
     <View>
       <Image source={IMGPBird} style={styles.image} />
       <View style={styles.detailsContainer}>
-        <Text style={styles.commonName}>{speciesDetails[0].commonName || 'Rayadito 2'}</Text>
-        <View style={styles.lineStyle}></View> {/* Add this line */}
-        {speciesDetails.map((species, index) => (
-          <View key={index} style={styles.info}>
-            <DetailItem
-              label="Nombre Científico:"
-              name={species.scientificName}
+        <Text style={styles.commonName}>{sighting.name}</Text>
+        <View style={styles.lineStyle}></View>
+        <View style={styles.info}>
+          <DetailItem
+            label="Nombre Científico:"
+            name={sighting.scientificname}
+          />
+          <DetailItem label="Clase:" name={sighting.class} />
+          <DetailItem label="Familia:" name={sighting.family} />
+          <DetailItem label="Localidad:" name={sighting.region} />
+          <DetailItem label="Condición:" name={sighting.condition} />
+          <DetailItem label="Tipo:" name={sighting.type} />
+          <DetailItem
+            label="Último avistamiento:"
+            name={new Date(
+              sighting.lastsighting.seconds * 1000
+            ).toLocaleDateString()}
+          />
+          {/* Add other details you want to display */}
+          <View style={styles.buttonContainer}>
+            <Button
+              text="Reportar Avistamiento"
+              buttonStyle={styles.buttonReport}
+              textStyle={styles.textRegister}
+              onPress={() => console.log('Reportar Avistamiento')}
             />
-            <DetailItem label="Clase:" name={species.class} />
-            <DetailItem label="Fmailia:" name={species.family} />
-            <DetailItem label="Localidad:" name={species.location} />
-            <DetailItem label="Pertenencia:" name={species.ownership} />
-            <DetailItem label="Condición:" name={species.condition} />
-            <DetailItem label="Preocupación:" name={species.status} />
-            <DetailItem label="Último avistamiento:" name={species.lastSeen} />
-            <View style={styles.buttonContainer}>
-              <Button
-                text="Reportar Avistamiento"
-                buttonStyle={styles.buttonReport}
-                textStyle={styles.textRegister}
-                onPress={() => console.log(1)}
-              />
-            </View>
           </View>
-        ))}
+        </View>
       </View>
-    </View >
+    </View>
   )
 }
 
@@ -95,16 +89,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#5d9398',
     borderBottomWidth: 2,
     alignSelf: 'stretch',
-    marginVertical: 10,
-    width: '80%',
-    margin: 'auto',
   },
   commonName: {
     fontSize: 24,
-    textAlign: 'right',
+    textAlign: 'center',
+    fontWeight: 'bold',
     marginRight: 20,
     marginVertical: 20,
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   info: {
     display: 'flex',
@@ -122,14 +114,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     height: 100,
-    width: '100%'
+    width: '100%',
   },
   buttonReport: {
     backgroundColor: '#5d9398',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: '50%'
+    width: '50%',
   },
   buttonText: {
     textAlign: 'center',
@@ -138,5 +130,5 @@ const styles = StyleSheet.create({
   },
   textRegister: {
     color: '#FFFFFF',
-  }
+  },
 })

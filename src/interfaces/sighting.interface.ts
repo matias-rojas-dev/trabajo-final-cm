@@ -5,7 +5,10 @@ export interface ISighting {
   class: string
   condition: string
   family: string
-  lastsighting: Date // Actualizado para ser un objeto Date
+  lastsighting: {
+    seconds: number
+    nanoseconds: number
+  }
   location: {
     latitude: number
     longitude: number

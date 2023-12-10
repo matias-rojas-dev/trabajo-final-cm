@@ -3,26 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   ScrollView,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
-import { BIRDIMG } from '../../imports/images/images.imports'
-import Button from '../../components/Button/Button'
 import { database } from '../../services/firebaseConfig'
-import {
-  QuerySnapshot,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore'
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { SightingItem } from '../../components/SightingItem/SightinItem'
 import { ISighting } from '../../interfaces/sighting.interface'
-
 
 export const MainScreen: React.FC = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -46,14 +36,12 @@ export const MainScreen: React.FC = ({ navigation }) => {
       }))
       setItems(data)
       setLoading(false)
-
     })
 
     return () => {
       unsubscribe()
     }
   }, [])
-
 
   const pressMarker = (event: any) => {
     const localMarkers = markers
@@ -63,8 +51,6 @@ export const MainScreen: React.FC = ({ navigation }) => {
   const filteredSightings = items.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
-
-  console.log(111111111111, filteredSightings)
 
   return (
     <View style={styles.container}>
@@ -104,11 +90,14 @@ export const MainScreen: React.FC = ({ navigation }) => {
         ) : (
           <ScrollView style={styles.scrollView}>
             {filteredSightings.map((sighting) => (
-              <SightingItem key={sighting.id} sighting={sighting} />
+              <SightingItem
+                key={sighting.id}
+                sighting={sighting}
+                navigation={navigation}
+              />
             ))}
           </ScrollView>
         )}
-
       </View>
     </View>
   )

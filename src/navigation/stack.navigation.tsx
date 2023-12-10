@@ -9,7 +9,6 @@ import { FormScreen } from '../screens/Form/FormScreen'
 const Stack = createNativeStackNavigator()
 
 export const StackNavigator = () => {
-
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -30,6 +29,11 @@ export const StackNavigator = () => {
       <Stack.Screen
         name="FormScreen"
         component={FormScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SpeciesDetail"
+        component={SpeciesDetail}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

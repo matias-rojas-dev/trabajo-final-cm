@@ -1,39 +1,50 @@
--* 1////
 import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
+
 import { BIRDIMG } from '../../imports/images/images.imports'
 import Button from '../Button/Button'
 import { ISighting } from '../../interfaces/sighting.interface'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 interface SightingItemProps {
   sighting: ISighting
+  navigation: any
 }
 
-export const SightingItem: React.FC<SightingItemProps> = ({ sighting }) => {
-  return (
-    <View style={styles.sightingItem}>
-      <Image source={BIRDIMG} style={styles.sightingImage} />
-      <View style={styles.sightingInfo}>
-        <Text style={styles.sightingName}>{sighting.name}</Text>
-        <Text style={styles.sightingDetails}>{sighting.type}</Text>
-        <Text style={styles.sightingDetails}>{sighting.condition}</Text>
-        <Text style={styles.sightingDetails}>
-          Último avistamiento el {sighting.lastsighting.toLocaleDateString()}
-        </Text>
+export const SightingItem: React.FC<SightingItemProps> = ({
+  sighting,
+  navigation,
+}) => {
+  const date = new Date(sighting.lastsighting.seconds * 1000)
 
+  return (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('SpeciesDetail', { sighting: sighting })
+      }
+    >
+      <View style={styles.sightingItem}>
+        <Image source={BIRDIMG} style={styles.sightingImage} />
+        <View style={styles.sightingInfo}>
+          <Text style={styles.sightingName}>{sighting.name}</Text>
+          <Text style={styles.sightingDetails}>{sighting.type}</Text>
+          <Text style={styles.sightingDetails}>{sighting.condition}</Text>
+          <Text style={styles.sightingDetails}>
+            Último avistamiento el {date.toLocaleDateString()}
+          </Text>
+        </View>
+        <Button
+          text="Reportar"
+          buttonStyle={styles.reportButton}
+          textStyle={styles.textButton}
+          onPress={() => console.log(1)}
+        />
       </View>
-      <Button
-        text="Reportar"
-        buttonStyle={styles.reportButton}
-        textStyle={styles.textButton}
-        onPress={() => console.log(1)}
-      />
-    </View>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-
   scrollView: {
     backgroundColor: 'white',
   },
@@ -100,4 +111,3 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 })
-
