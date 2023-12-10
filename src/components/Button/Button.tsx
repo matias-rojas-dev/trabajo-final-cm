@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
     width: '100%',
-    marginBottom: 10, // Ajusta el margen según sea necesario
+    marginBottom: 10,
   },
   buttonText: {
     textAlign: 'center',

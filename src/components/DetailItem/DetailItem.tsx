@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: '45%',
     textAlign: 'left',
     fontSize: 16,
-    color: '#555', // Adjust color to match image 2
+    color: '#555',
   },
 })
 

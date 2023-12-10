@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     paddingLeft: 22,
-    paddingTop: 60
+    paddingTop: 60,
   },
   logoContainer: {
     alignItems: 'center',
     marginBottom: 20,
-    width: '80%'
+    width: '80%',
   },
   logo: {
     width: 300,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     color: '#333',
-    marginBottom: - 10
+    marginBottom: -10,
   },
   subtitle: {
     fontSize: 30,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 100,
-    width: '80%'
+    width: '80%',
   },
   buttonLogin: {
     backgroundColor: 'transparent',
@@ -75,15 +75,15 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 10, // Adjust the margin as necessary
-    width: '100%'
+    marginBottom: 10,
+    width: '100%',
   },
   buttonRegister: {
     backgroundColor: '#5d9398',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: '100%'
+    width: '100%',
   },
   buttonText: {
     textAlign: 'center',
@@ -92,7 +92,5 @@ const styles = StyleSheet.create({
   },
   textRegister: {
     color: '#FFFFFF',
-  }
+  },
 })
-
-

@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
     alignItems: 'center',
-    marginVertical: 10, // Adjust as needed
+    marginVertical: 10,
   },
   cameraButtonText: {
     color: '#FFFFFF',

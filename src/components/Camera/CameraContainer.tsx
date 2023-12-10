@@ -21,7 +21,6 @@ export const CameraContainer = ({ navigation, route }) => {
   }
 
   if (!permission) {
-    // Camera permissions are still loading
     return (
       <View>
         <Text>No tienes los permisos</Text>
@@ -63,7 +62,6 @@ export const CameraContainer = ({ navigation, route }) => {
 
   const savePhoto = async () => {
     await MediaLibrary.saveToLibraryAsync(fileUri)
-    // Call the callback function passed via route params
     if (route.params?.onPhotoCaptured) {
       route.params.onPhotoCaptured(fileUri)
     }

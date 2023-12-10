@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    width: 150, // Ajusta esto según el tamaño de tu imagen
-    height: 150, // Ajusta esto según el tamaño de tu imagen
+    width: 150,
+    height: 150,
     resizeMode: 'contain',
     marginBottom: 20,
   },
@@ -38,10 +38,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   swiper: {
-    height: 200, // Ajusta la altura como sea necesario
-    width: '100%', // Ajusta el ancho como sea necesario
+    height: 200,
+    width: '100%',
   },
-  // Agrega estilos adicionales para cada slide del Swiper aquí si es necesario
 })
 
 export default WelcomeScreen

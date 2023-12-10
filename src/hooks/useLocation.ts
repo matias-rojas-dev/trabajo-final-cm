@@ -8,7 +8,6 @@ interface LocationState {
   region: string | null
 }
 
-// Función separada para obtener la región
 const getLocationRegion = async (
   latitude: number,
   longitude: number

@@ -26,7 +26,7 @@ export async function uploadFile(fileUri: string): Promise<string> {
   const snapshot = await uploadBytes(storageRef, blob)
   const uriFile = await getDownloadURL(snapshot.ref)
 
-  return uriFile // This will return the download URL
+  return uriFile
 }
 
 export const database = getFirestore()

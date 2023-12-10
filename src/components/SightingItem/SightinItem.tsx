@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: -1,
   },
   textButton: {
-    color: 'white', // Button text color
+    color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
   },
