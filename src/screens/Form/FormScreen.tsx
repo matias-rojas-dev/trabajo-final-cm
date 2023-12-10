@@ -8,6 +8,7 @@ import {
   Button as RNButton,
   Alert,
   Image,
+  ActivityIndicator,
 } from 'react-native'
 import { ISighting } from '../../interfaces/sighting.interface'
 import { Input } from '../../components/Input/Input'
@@ -24,7 +25,9 @@ export const FormScreen: React.FC = () => {
   const navigation = useNavigation()
   const { location, error: locationError, getLocationRegion } = useLocation()
   const [imageUri, setImageUri] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const [sighting, setSighting] = useState<ISighting>({
+    id: '',
     worry: 'sdfh',
     belonging: 'dfh',
     class: 'sdfh',
@@ -54,11 +57,10 @@ export const FormScreen: React.FC = () => {
   }
 
   const handleSubmit = async () => {
+    setLoading(true)
     try {
       const uriFile = await uploadFile(imageUri)
-      setSighting((prevSighting) => ({ ...prevSighting, image: uriFile }))
-
-      const docRef = await addDoc(collection(database, 'florayfauna'), {
+      await addDoc(collection(database, 'florayfauna'), {
         ...sighting,
         image: uriFile,
       })
@@ -69,6 +71,8 @@ export const FormScreen: React.FC = () => {
     } catch (error) {
       console.error('Error al enviar datos:', error)
       Alert.alert('Error', 'Ocurrió un error al enviar los datos.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -95,45 +99,53 @@ export const FormScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Text style={styles.title}>Reportar Avistamiento</Text>
-      {imageUri ? (
-        <View style={styles.containerPreviewImage}>
-          <Image source={{ uri: imageUri }} style={styles.capturedImage} />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : (
-        <TouchableOpacity
-          style={styles.cameraButton}
-          onPress={() =>
-            navigation.navigate('CameraContainer', {
-              onPhotoCaptured: handlePhotoCaptured,
-            })
-          }
-        >
-          <Text style={styles.cameraButtonText}>Open Camera</Text>
-        </TouchableOpacity>
+        <>
+          {imageUri ? (
+            <View style={styles.containerPreviewImage}>
+              <Image source={{ uri: imageUri }} style={styles.capturedImage} />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.cameraButton}
+              onPress={() =>
+                navigation.navigate('CameraContainer', {
+                  onPhotoCaptured: handlePhotoCaptured,
+                })
+              }
+            >
+              <Text style={styles.cameraButtonText}>Open Camera</Text>
+            </TouchableOpacity>
+          )}
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.container}>
+              {Object.keys(sighting).map((key, index) => {
+                if (typeof sighting[key as keyof ISighting] === 'string') {
+                  return (
+                    <Input
+                      key={index}
+                      label={getLabel(key)}
+                      value={sighting[key as keyof ISighting] as string}
+                      onChangeText={handleChange(key as keyof ISighting)}
+                    />
+                  )
+                }
+                return null
+              })}
+              <Button
+                text="Registrar"
+                buttonStyle={styles.reportButton}
+                textStyle={styles.buttonText}
+                onPress={handleSubmit}
+              />
+            </View>
+          </ScrollView>
+        </>
       )}
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          {Object.keys(sighting).map((key, index) => {
-            if (typeof sighting[key as keyof ISighting] === 'string') {
-              return (
-                <Input
-                  key={index}
-                  label={getLabel(key)}
-                  value={sighting[key as keyof ISighting] as string}
-                  onChangeText={handleChange(key as keyof ISighting)}
-                />
-              )
-            }
-            return null
-          })}
-          <Button
-            text="Registrar"
-            buttonStyle={styles.reportButton}
-            textStyle={styles.buttonText}
-            onPress={handleSubmit}
-          />
-        </View>
-      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -152,6 +164,11 @@ const styles = StyleSheet.create({
     width: '80%',
     aspectRatio: 1,
     resizeMode: 'contain',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   preview: {
     flex: 1,

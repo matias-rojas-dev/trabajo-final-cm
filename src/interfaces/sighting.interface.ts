@@ -1,5 +1,5 @@
 export interface ISighting {
-  id?: string
+  id: string
   worry: string
   belonging: string
   class: string

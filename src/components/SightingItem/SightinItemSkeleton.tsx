@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
     elevation: 3,
     flexDirection: 'column',
+    marginHorizontal: 10,
   },
   sightingItem: {
     flexDirection: 'row',

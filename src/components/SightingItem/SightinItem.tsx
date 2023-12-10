@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
-import { ISighting } from '../../interfaces/sighting.interface'
+
+import { BIRDIMG } from '../../imports/images/images.imports'
 import Button from '../Button/Button'
+import { ISighting } from '../../interfaces/sighting.interface'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 interface SightingItemProps {
   sighting: ISighting
   navigation: any
 }
-
 export const SightingItem: React.FC<SightingItemProps> = ({
   sighting,
   navigation,
@@ -46,6 +47,7 @@ export const SightingItem: React.FC<SightingItemProps> = ({
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   sightingItemContainer: {
     backgroundColor: 'white',
@@ -86,12 +88,13 @@ const styles = StyleSheet.create({
   },
   reportButton: {
     backgroundColor: '#5d9398',
-    borderBottomRightRadius: 10,
-    borderBottomLeftRadius: 10,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     paddingVertical: 10,
-    marginBottom: -1,
+    paddingHorizontal: 20,
+    marginBottom: -3,
   },
   textButton: {
     color: 'white',

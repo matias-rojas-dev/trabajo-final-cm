@@ -6,7 +6,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
+  Image,
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { database } from '../../services/firebaseConfig'
@@ -19,8 +19,6 @@ export const MainScreen: React.FC = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [items, setItems] = useState<ISighting[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  // TODO: Quitar el loading cuando la imagen haya cargado correctamente
-  const [imageLoading, setImageLoading] = useState(true)
 
   const [markers, setMarkers] = useState([
     {
@@ -35,8 +33,8 @@ export const MainScreen: React.FC = ({ navigation }) => {
 
     const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
       const data: ISighting[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
         ...(doc.data() as ISighting),
+        id: doc.id,
       }))
       setItems(data)
       setLoading(false)
@@ -55,22 +53,34 @@ export const MainScreen: React.FC = ({ navigation }) => {
   const filteredSightings = items.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+  const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>(
+    {}
+  )
+
+  const onImageLoadEnd = (id: string) => {
+    setLoadedImages((prevState) => ({ ...prevState, [id]: true }))
+  }
 
   return (
     <View style={styles.container}>
-      <MapView
-        onPress={pressMarker}
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-      >
-        {markers.map(({ latitude, longitude }, index) => (
+      <MapView onPress={() => {}} style={styles.map} provider={PROVIDER_GOOGLE}>
+        {filteredSightings.map((sighting) => (
           <Marker
-            key={index}
+            key={sighting.id}
             coordinate={{
-              latitude: latitude,
-              longitude: longitude,
+              latitude: sighting.location.latitude,
+              longitude: sighting.location.longitude,
             }}
-          ></Marker>
+            onPress={() => navigation.navigate('SpeciesDetail', { sighting })}
+          >
+            <View style={styles.markerContainer}>
+              <Image
+                source={{ uri: sighting.image }}
+                style={styles.markerImage}
+                onLoadEnd={() => onImageLoadEnd(sighting.id)}
+              />
+            </View>
+          </Marker>
         ))}
       </MapView>
       <TouchableOpacity
@@ -79,7 +89,7 @@ export const MainScreen: React.FC = ({ navigation }) => {
       >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
-      <View style={styles.scrollViewContainer}>
+      <View style={styles.contentArea}>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.input}
@@ -92,7 +102,7 @@ export const MainScreen: React.FC = ({ navigation }) => {
         {loading ? (
           [0, 1, 2].map((index) => <SightingItemSkeleton key={index} />)
         ) : (
-          <ScrollView style={styles.scrollView}>
+          <ScrollView style={styles.scrollContainer}>
             {filteredSightings.map((sighting) => (
               <SightingItem
                 key={sighting.id}
@@ -106,48 +116,16 @@ export const MainScreen: React.FC = ({ navigation }) => {
     </View>
   )
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  addButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: '55%',
-    backgroundColor: '#5d9398',
-    borderRadius: 25,
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    lineHeight: 50,
-  },
   map: {
     height: '50%',
   },
-  markerImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-  },
-  scrollView: {
-    backgroundColor: '#F7F7F7',
-  },
-  sightingItem: {
-    flexDirection: 'row',
-    padding: 10,
-    alignItems: 'center',
-  },
-  scrollViewContainer: {
-    backgroundColor: '#F7F7F7',
-    position: 'absolute',
-    top: '50%',
-    width: '100%',
+  contentArea: {
+    flex: 1,
+    marginBottom: 20,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -164,5 +142,46 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginTop: 10,
+  },
+  addButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: '55%',
+    backgroundColor: '#5d9398',
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    lineHeight: 50,
+  },
+  markerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  markerImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 100,
+  },
+  scrollContainer: {
+    backgroundColor: '#F7F7F7',
   },
 })
