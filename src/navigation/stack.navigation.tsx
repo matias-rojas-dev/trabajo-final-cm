@@ -18,23 +18,8 @@ export const StackNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="StartScreen"
-        component={StartScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="LoginAndSignUp"
-        component={LoginAndSignUp}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="FormScreen"
         component={FormScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SpeciesDetail"
-        component={SpeciesDetail}
         options={{ headerShown: false }}
       />
       <Stack.Screen

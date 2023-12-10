@@ -5,6 +5,7 @@ import DetailItem from '../../components/DetailItem/DetailItem'
 import Button from '../../components/Button/Button'
 import { ISighting } from '../../interfaces/sighting.interface'
 import { RouteProp } from '@react-navigation/native'
+import { DEFAULTIMG } from '../../imports/images/images.imports'
 
 type SpeciesDetailRouteProp = RouteProp<
   { SpeciesDetail: { sighting: ISighting } },
@@ -31,7 +32,8 @@ export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
 
   return (
     <View>
-      <Image source={{ uri: sighting.image }} style={styles.image} />
+      {/* <Image source={{ uri: DEFAULTIMG }} style={styles.image} /> */}
+      <Image source={DEFAULTIMG} alt="Img" style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text style={styles.commonName}>{sighting.name}</Text>
         <View style={styles.lineStyle}></View>
@@ -51,7 +53,6 @@ export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
               sighting.lastsighting.seconds * 1000
             ).toLocaleDateString()}
           />
-          {/* Add other details you want to display */}
           <View style={styles.buttonContainer}>
             <Button
               text="Reportar Avistamiento"

@@ -2,11 +2,11 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { IMGLogo } from '../../utils/imports/imports'
 
-const WelcomeScreen = () => {
+export const Loading = () => {
   return (
     <View style={styles.container}>
       <Image source={IMGLogo} style={styles.logo} />
-      <Text style={styles.greeting}>👋 ¡HOLA, SERGIO!</Text>
+      <Text style={styles.greeting}>👋 ¡HOLA!</Text>
       <Text style={styles.question}>¿QUÉ DESCUBRIREMOS HOY?</Text>
     </View>
   )
@@ -42,5 +42,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 })
-
-export default WelcomeScreen

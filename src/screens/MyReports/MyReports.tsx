@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -6,60 +6,83 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  ImageSourcePropType
+  ImageSourcePropType,
 } from 'react-native'
 import { IMGPBird } from '../../utils/imports/imports'
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore'
+import { database } from '../../services/firebaseConfig'
+import { useAuth } from '../../hooks/useAuth'
+import { ISighting } from '../../interfaces/sighting.interface'
+import { ScrollView } from 'react-native-gesture-handler'
+import { SightingItemSkeleton } from '../../components/SightingItem/SightinItemSkeleton'
+import { SightingItem } from '../../components/SightingItem/SightinItem'
+import Button from '../../components/Button/Button'
 
-interface ReportProps {
-  id: string
-  name: string
-  category: string
-  coordinates: string,
-  date: string
-  imageUrl: ImageSourcePropType
-}
+export const MyReports = ({ navigation }) => {
+  const { currentUser } = useAuth()
+  const [items, setItems] = useState<ISighting[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [isEmpty, setIsEmpty] = useState(false) // Nuevo estado para controlar si la lista está vacía
 
-const reportsData: ReportProps[] = [
-  {
-    id: '1',
-    name: 'Rayadito',
-    category: 'Fauna/Aves',
-    coordinates: '33.420938, -70.603813',
-    date: 'Último avistamiento el 09/11/2023',
-    imageUrl: IMGPBird,
-  },
-  {
-    id: '2',
-    name: 'Rayadito',
-    category: 'Fauna/Aves',
-    coordinates: '33.386930, -70.608393',
-    date: 'Último avistamiento el 27/11/2022',
-    imageUrl: IMGPBird,
-  },
-]
+  useEffect(() => {
+    if (currentUser) {
+      const collectionRef = collection(database, 'florayfauna')
+      const querySnapshot = query(
+        collectionRef,
+        orderBy('name', 'desc'),
+        where('userId', '==', currentUser.uid)
+      )
 
-const MyReports = () => {
+      const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+        const data: ISighting[] = snapshot.docs.map((doc) => ({
+          ...(doc.data() as ISighting),
+          id: doc.id,
+        }))
+        console.log(data)
+        setItems(data)
+        setIsEmpty(data.length === 0) // Establece isEmpty basado en si hay datos
+        setLoading(false)
+      })
+
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [currentUser])
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>MIS REPORTES</Text>
-      <FlatList
-        data={reportsData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.reportItem}>
-            <Image source={item.imageUrl} style={styles.image} />
-            <View style={styles.infoContainer}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.details}>{item.category}</Text>
-              <Text style={styles.details}>{item.coordinates}</Text>
-              <Text style={styles.details}>{item.date}</Text>
-            </View>
-          </View>
-        )}
-      />
-      <TouchableOpacity style={styles.downloadButton}>
-        <Text style={styles.downloadButtonText}>Descargar reporte</Text>
-      </TouchableOpacity>
+      {loading ? (
+        [0, 1, 2].map((index) => <SightingItemSkeleton key={index} />)
+      ) : isEmpty ? ( // Verifica si la lista está vacía
+        <View style={styles.containerInfo}>
+          <Text style={styles.defaultText}>
+            Aún no has reportado avistamiento de algún ave
+          </Text>
+          <Button
+            text="Reportar Avistamiento"
+            buttonStyle={styles.buttonReport}
+            textStyle={{ color: '#000' }}
+            onPress={() => navigation.navigate('FormScreen')}
+          />
+        </View>
+      ) : (
+        <ScrollView>
+          {items.map((sighting) => (
+            <SightingItem
+              key={sighting.id}
+              sighting={sighting}
+              navigation={navigation}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   )
 }
@@ -70,47 +93,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
     padding: 22,
   },
-  header: {
-    fontSize: 24,
+  defaultText: {
+    fontSize: 16,
     textAlign: 'center',
-    marginVertical: 20,
   },
-  reportItem: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  infoContainer: {
+  containerInfo: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
   },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  details: {
-    fontSize: 14,
-    color: '#555',
-  },
-  downloadButton: {
-    backgroundColor: '#000',
+  buttonReport: {
+    backgroundColor: '#5d9398',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  downloadButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    width: '100%',
+    marginTop: 50,
   },
 })
-
-export default MyReports

@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
 
-import { BIRDIMG } from '../../imports/images/images.imports'
 import Button from '../Button/Button'
 import { ISighting } from '../../interfaces/sighting.interface'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { DEFAULTIMG } from '../../imports/images/images.imports'
 
 interface SightingItemProps {
   sighting: ISighting
@@ -15,7 +15,6 @@ export const SightingItem: React.FC<SightingItemProps> = ({
   navigation,
 }) => {
   const date = new Date(sighting.lastsighting.seconds * 1000)
-
   return (
     <View style={styles.sightingItemContainer}>
       <TouchableOpacity
@@ -24,10 +23,7 @@ export const SightingItem: React.FC<SightingItemProps> = ({
         }
       >
         <View style={styles.sightingItem}>
-          <Image
-            source={{ uri: sighting.image }}
-            style={styles.sightingImage}
-          />
+          <Image source={DEFAULTIMG} style={styles.sightingImage} />
           <View style={styles.sightingInfo}>
             <Text style={styles.sightingName}>{sighting.name}</Text>
             <Text style={styles.sightingDetails}>{sighting.type}</Text>

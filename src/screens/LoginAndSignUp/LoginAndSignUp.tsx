@@ -1,41 +1,71 @@
 import React, { useState } from 'react'
-import { initializeApp } from 'firebase/app'
-import { View, Text, TextInput, StyleSheet } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { initializeApp } from 'firebase/app'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
+import { database, firebaseConfig } from '../../services/firebaseConfig'
 import Button from '../../components/Button/Button'
-import { firebaseConfig } from '../../services/firebaseConfig'
-
+import { useAuth } from '../../hooks/useAuth'
+import { transformFirebaseUser } from '../../utils/functions/transformFirebaseUser'
+import { addDoc, collection } from 'firebase/firestore'
+import { Loading } from '../Loading/Loading'
 
 export const LoginAndSignUp: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigation = useNavigation()
-
   const app = initializeApp(firebaseConfig)
   const auth = getAuth(app)
 
-  const handleGoToRegister = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const navigation = useNavigation()
+  const [loading, setLoading] = useState(false)
+
+  const { login } = useAuth()
+
+  const handleGoToRegister = async () => {
+    setLoading(true) // Inicia el loading
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        console.log('Account created')
-        console.log(auth)
-        // navigation.navigate('SpeciesDetail')
-      }).catch(error => {
-        console.log('No es posible registrar su usuario. Error: ', error)
+      .then(async (userCredential) => {
+        const userData = transformFirebaseUser(userCredential.user)
+        await addDoc(collection(database, 'users'), {
+          ...userData,
+          name,
+        })
+        login({ ...userData, name })
+        navigation.navigate('MainScreen')
       })
+      .catch((error) => {
+        Alert.alert(
+          'Error',
+          error.message || 'Ocurrió un error al intentar crear el usuario.'
+        )
+      })
+      .finally(() => setLoading(false))
   }
 
   const handleLogin = () => {
+    setLoading(true) // Inicia el loading
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        console.log('Account created')
-        console.log(auth)
-        // navigation.navigate('SpeciesDetail')
-      }).catch(error => {
-        console.log('No es posible iniciar sesión. Error: ', error)
-        alert(error.message)
+      .then((userCredential) => {
+        const userData = transformFirebaseUser(userCredential.user)
+        login(userData)
+        navigation.navigate('MainScreen')
       })
+      .catch((error) => {
+        Alert.alert(
+          'Error',
+          error.message || 'Ocurrió un error al intentar iniciar sesión.'
+        )
+      })
+      .finally(() => setLoading(false)) // Termina el loading
+  }
+
+  if (loading) {
+    return <Loading />
   }
 
   return (
@@ -44,6 +74,14 @@ export const LoginAndSignUp: React.FC = () => {
         <Text style={styles.title}>BIENVENIDO A</Text>
         <Text style={styles.subtitle}>Nature Guard</Text>
       </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre y Apellido"
+        value={name}
+        onChangeText={setName}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="E-mail"
@@ -73,7 +111,6 @@ export const LoginAndSignUp: React.FC = () => {
           onPress={handleGoToRegister}
         />
       </View>
-
     </View>
   )
 }
@@ -91,12 +128,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     paddingLeft: 22,
-    paddingTop: 60
+    paddingTop: 60,
   },
   title: {
     fontSize: 25,
     color: '#333',
-    marginBottom: - 10
+    marginBottom: -10,
   },
   subtitle: {
     fontSize: 30,
@@ -109,7 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
     fontSize: 16,
-    width: '80%'
+    width: '80%',
   },
   button: {
     backgroundColor: '#00ACEE',
@@ -123,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 100,
-    width: '80%'
+    width: '80%',
   },
   buttonLogin: {
     backgroundColor: 'transparent',
@@ -134,14 +171,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginBottom: 10,
-    width: '100%'
+    width: '100%',
   },
   buttonRegister: {
     backgroundColor: '#5d9398',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: '100%'
+    width: '100%',
   },
   buttonText: {
     textAlign: 'center',
@@ -150,5 +187,5 @@ const styles = StyleSheet.create({
   },
   textRegister: {
     color: '#FFFFFF',
-  }
+  },
 })

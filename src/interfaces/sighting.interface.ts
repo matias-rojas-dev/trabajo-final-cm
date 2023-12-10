@@ -1,5 +1,5 @@
 export interface ISighting {
-  id: string
+  id?: string
   worry: string
   belonging: string
   class: string
@@ -18,4 +18,5 @@ export interface ISighting {
   scientificname: string
   type: string
   image: string
+  userId: string
 }

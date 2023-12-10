@@ -9,6 +9,7 @@ import {
   Alert,
   Image,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native'
 import { ISighting } from '../../interfaces/sighting.interface'
 import { Input } from '../../components/Input/Input'
@@ -17,36 +18,23 @@ import Button from '../../components/Button/Button'
 import { addDoc, collection } from 'firebase/firestore'
 import { database, uploadFile } from '../../services/firebaseConfig'
 import { useNavigation } from '@react-navigation/native'
-import * as Location from 'expo-location'
 import useLocation from '../../hooks/useLocation'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useAuth } from '../../hooks/useAuth'
+import { defaultSighting } from '../../utils/data/defaultSighting'
+import { resetForm } from '../../utils/functions/resetForm'
+
+interface Location {
+  latitude: number
+  longitude: number
+}
 
 export const FormScreen: React.FC = () => {
   const navigation = useNavigation()
+  const { currentUser } = useAuth()
   const { location, error: locationError, getLocationRegion } = useLocation()
   const [imageUri, setImageUri] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [sighting, setSighting] = useState<ISighting>({
-    id: '',
-    worry: 'sdfh',
-    belonging: 'dfh',
-    class: 'sdfh',
-    condition: 'shdfh',
-    family: 'sdfh',
-    name: 'qwet',
-    region: 'qwet',
-    scientificname: 'qwet',
-    type: 'qwet',
-    lastsighting: {
-      seconds: 0,
-      nanoseconds: 0,
-    },
-    location: {
-      latitude: 0,
-      longitude: 0,
-    },
-    image: '',
-  })
+  const [sighting, setSighting] = useState<ISighting>(defaultSighting)
 
   const handleChange = (name: keyof ISighting) => (value: string) => {
     setSighting((prevSighting) => ({ ...prevSighting, [name]: value }))
@@ -59,14 +47,22 @@ export const FormScreen: React.FC = () => {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      const uriFile = await uploadFile(imageUri)
+      // const uriFile = await uploadFile(imageUri)
       await addDoc(collection(database, 'florayfauna'), {
+        // ...sighting,
+        // image: uriFile,
         ...sighting,
-        image: uriFile,
+        userId: currentUser?.uid,
       })
 
       Alert.alert('Éxito', 'Avistamiento registrado con éxito.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.navigate('MainScreen')
+            resetForm(setSighting, setImageUri) // Usa la función importada
+          },
+        },
       ])
     } catch (error) {
       console.error('Error al enviar datos:', error)
@@ -96,9 +92,9 @@ export const FormScreen: React.FC = () => {
       fetchRegion()
     }
   }, [location, getLocationRegion])
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Text style={styles.title}>Reportar Avistamiento</Text>
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
@@ -123,19 +119,21 @@ export const FormScreen: React.FC = () => {
           )}
           <ScrollView style={styles.scrollView}>
             <View style={styles.container}>
-              {Object.keys(sighting).map((key, index) => {
-                if (typeof sighting[key as keyof ISighting] === 'string') {
-                  return (
-                    <Input
-                      key={index}
-                      label={getLabel(key)}
-                      value={sighting[key as keyof ISighting] as string}
-                      onChangeText={handleChange(key as keyof ISighting)}
-                    />
-                  )
-                }
-                return null
-              })}
+              {Object.keys(sighting)
+                .filter((key) => key !== 'id' && key !== 'image')
+                .map((key, index) => {
+                  if (typeof sighting[key as keyof ISighting] === 'string') {
+                    return (
+                      <Input
+                        key={index}
+                        label={getLabel(key)}
+                        value={sighting[key as keyof ISighting] as string}
+                        onChangeText={handleChange(key as keyof ISighting)}
+                      />
+                    )
+                  }
+                  return null
+                })}
               <Button
                 text="Registrar"
                 buttonStyle={styles.reportButton}

@@ -3,9 +3,11 @@ import { Camera, CameraType } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { CameraPreview } from '../CameraPreview/CameraPreview'
+import { useNavigation } from '@react-navigation/native'
 let camera: Camera | null
 
-export const CameraContainer = ({ navigation, route }) => {
+export const CameraContainer = ({ route }) => {
+  const navigation = useNavigation()
   const [type, setType] = useState(CameraType.back)
   const [permission, requestPermission] = Camera.useCameraPermissions()
   const [previewVisible, setPreviewVisible] = useState(false)
@@ -65,9 +67,8 @@ export const CameraContainer = ({ navigation, route }) => {
     if (route.params?.onPhotoCaptured) {
       route.params.onPhotoCaptured(fileUri)
     }
-    navigation.goBack()
+    navigation.navigate('FormScreen')
   }
-  console.log(capturedImage)
 
   return (
     <View style={styles.container}>

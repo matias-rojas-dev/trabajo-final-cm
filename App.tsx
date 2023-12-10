@@ -1,14 +1,17 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { StackNavigator } from './src/navigation/stack.navigation'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { DrawerNavigator } from './src/navigation/drawer.navigation'
+import { AuthProvider } from './src/context/AuthContext'
+
+const Drawer = createDrawerNavigator()
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <AuthProvider>
       <NavigationContainer>
-        <StackNavigator />
+        <DrawerNavigator />
       </NavigationContainer>
-    </GestureHandlerRootView>
+    </AuthProvider>
   )
 }

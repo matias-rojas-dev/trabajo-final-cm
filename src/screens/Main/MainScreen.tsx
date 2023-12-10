@@ -14,18 +14,17 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { SightingItem } from '../../components/SightingItem/SightinItem'
 import { ISighting } from '../../interfaces/sighting.interface'
 import { SightingItemSkeleton } from '../../components/SightingItem/SightinItemSkeleton'
+import { useNavigation } from '@react-navigation/native'
+import { DEFAULTIMG } from '../../imports/images/images.imports'
+import { useAuth } from '../../hooks/useAuth'
 
-export const MainScreen: React.FC = ({ navigation }) => {
+export const MainScreen: React.FC = () => {
+  const { currentUser } = useAuth()
+  console.log(currentUser)
+  const navigation = useNavigation()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [items, setItems] = useState<ISighting[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-
-  const [markers, setMarkers] = useState([
-    {
-      latitude: -33.437,
-      longitude: -70.634411,
-    },
-  ])
 
   useEffect(() => {
     const collectionRef = collection(database, 'florayfauna')
@@ -44,11 +43,6 @@ export const MainScreen: React.FC = ({ navigation }) => {
       unsubscribe()
     }
   }, [])
-
-  const pressMarker = (event: any) => {
-    const localMarkers = markers
-    setMarkers([...localMarkers, event.nativeEvent.coordinate])
-  }
 
   const filteredSightings = items.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -75,7 +69,8 @@ export const MainScreen: React.FC = ({ navigation }) => {
           >
             <View style={styles.markerContainer}>
               <Image
-                source={{ uri: sighting.image }}
+                // source={{ uri: sighting.image }}
+                source={DEFAULTIMG}
                 style={styles.markerImage}
                 onLoadEnd={() => onImageLoadEnd(sighting.id)}
               />
