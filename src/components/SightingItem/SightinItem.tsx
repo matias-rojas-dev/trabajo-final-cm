@@ -1,37 +1,36 @@
 import React from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
-
-import Button from '../Button/Button'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { ISighting } from '../../interfaces/sighting.interface'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { DEFAULTIMG } from '../../imports/images/images.imports'
+import { SightingImage } from '../SightingImage/SightingImage'
+import { SightingInfo } from '../SightingInfo/SightingInfo'
+import Button from '../Button/Button'
 
 interface SightingItemProps {
   sighting: ISighting
   navigation: any
 }
+
 export const SightingItem: React.FC<SightingItemProps> = ({
   sighting,
   navigation,
 }) => {
-  const date = new Date(sighting.lastsighting.seconds * 1000)
+  const date = new Date(
+    sighting.lastsighting.seconds * 1000
+  ).toLocaleDateString()
+  const navigateToDetail = () =>
+    navigation.navigate('SpeciesDetail', { sighting })
+
   return (
     <View style={styles.sightingItemContainer}>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('SpeciesDetail', { sighting: sighting })
-        }
-      >
+      <TouchableOpacity onPress={navigateToDetail}>
         <View style={styles.sightingItem}>
-          <Image source={DEFAULTIMG} style={styles.sightingImage} />
-          <View style={styles.sightingInfo}>
-            <Text style={styles.sightingName}>{sighting.name}</Text>
-            <Text style={styles.sightingDetails}>{sighting.type}</Text>
-            <Text style={styles.sightingDetails}>{sighting.condition}</Text>
-            <Text style={styles.sightingDetails}>
-              Último avistamiento el {date.toLocaleDateString()}
-            </Text>
-          </View>
+          <SightingImage imageUrl={sighting.image} />
+          <SightingInfo
+            name={sighting.name || 'No se menciona'}
+            type={sighting.type || 'No se menciona'}
+            condition={sighting.condition || 'No se menciona'}
+            date={date}
+          />
         </View>
       </TouchableOpacity>
       <Button
@@ -63,24 +62,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',
-  },
-  sightingImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  sightingInfo: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  sightingName: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  sightingDetails: {
-    fontSize: 12,
-    color: 'grey',
   },
   reportButton: {
     backgroundColor: '#5d9398',

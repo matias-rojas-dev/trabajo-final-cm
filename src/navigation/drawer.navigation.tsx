@@ -29,12 +29,18 @@ export const DrawerNavigator = () => {
           title: 'Reportes Globales',
         }}
       />
+      {/* <Drawer.Screen
+        name="Logout"
+        component={LogoutComponent}
+        options={{
+          drawerLabel: 'Cerrar Sesión',
+        }}
+      /> */}
       <Drawer.Screen
         name="MyReports"
         component={MyReports}
         options={{ drawerLabel: 'Mis reportes', title: 'Mis reportes' }}
       />
-
       <Drawer.Screen
         name="FormScreen"
         component={FormScreen}
@@ -57,14 +63,6 @@ export const DrawerNavigator = () => {
         options={{
           drawerItemStyle: { height: 0 },
           title: 'Fotografía',
-        }}
-      />
-      <Drawer.Screen
-        name="Logout"
-        component={LogoutComponent} // Un componente que ejecuta el logout en componentDidMount
-        options={{
-          drawerLabel: 'Cerrar Sesión',
-          // otras opciones
         }}
       />
     </Drawer.Navigator>

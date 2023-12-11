@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Image, Text, ActivityIndicator } from 'react-native'
-import { IMGPBird } from '../../utils/imports/imports'
-import DetailItem from '../../components/DetailItem/DetailItem'
-import Button from '../../components/Button/Button'
-import { ISighting } from '../../interfaces/sighting.interface'
 import { RouteProp } from '@react-navigation/native'
+
+import { DetailItem } from '../../components/DetailItem/DetailItem'
+import { ISighting } from '../../interfaces/sighting.interface'
 import { DEFAULTIMG } from '../../imports/images/images.imports'
 
 type SpeciesDetailRouteProp = RouteProp<
@@ -15,10 +14,11 @@ type SpeciesDetailRouteProp = RouteProp<
 interface SpeciesDetailProps {
   route: SpeciesDetailRouteProp
 }
+
 export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
   const { sighting } = route.params
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     if (sighting) {
@@ -32,8 +32,13 @@ export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
 
   return (
     <View>
-      {/* <Image source={{ uri: DEFAULTIMG }} style={styles.image} /> */}
-      <Image source={DEFAULTIMG} alt="Img" style={styles.image} />
+      <Image
+        source={{
+          uri: sighting.image ? sighting.image : DEFAULTIMG,
+        }}
+        alt="Img"
+        style={styles.image}
+      />
       <View style={styles.detailsContainer}>
         <Text style={styles.commonName}>{sighting.name}</Text>
         <View style={styles.lineStyle}></View>
@@ -42,25 +47,29 @@ export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
             label="Nombre Científico:"
             name={sighting.scientificname}
           />
-          <DetailItem label="Clase:" name={sighting.class} />
-          <DetailItem label="Familia:" name={sighting.family} />
-          <DetailItem label="Localidad:" name={sighting.region} />
-          <DetailItem label="Condición:" name={sighting.condition} />
-          <DetailItem label="Tipo:" name={sighting.type} />
+          <DetailItem
+            label="Clase:"
+            name={sighting.class || 'No se menciona'}
+          />
+          <DetailItem
+            label="Familia:"
+            name={sighting.family || 'No se menciona'}
+          />
+          <DetailItem
+            label="Localidad:"
+            name={sighting.region || 'No se menciona'}
+          />
+          <DetailItem
+            label="Condición:"
+            name={sighting.condition || 'No se menciona'}
+          />
+          <DetailItem label="Tipo:" name={sighting.type || 'No se menciona'} />
           <DetailItem
             label="Último avistamiento:"
             name={new Date(
               sighting.lastsighting.seconds * 1000
             ).toLocaleDateString()}
           />
-          <View style={styles.buttonContainer}>
-            <Button
-              text="Reportar Avistamiento"
-              buttonStyle={styles.buttonReport}
-              textStyle={styles.textRegister}
-              onPress={() => console.log('Reportar Avistamiento')}
-            />
-          </View>
         </View>
       </View>
     </View>
@@ -70,7 +79,7 @@ export const SpeciesDetail: React.FC<SpeciesDetailProps> = ({ route }) => {
 const styles = StyleSheet.create({
   image: {
     width: '100%',
-    height: 300,
+    height: 350,
   },
   detailsContainer: {
     backgroundColor: '#fff',

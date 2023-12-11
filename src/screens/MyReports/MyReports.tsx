@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  ImageSourcePropType,
-} from 'react-native'
-import { IMGPBird } from '../../utils/imports/imports'
+import { View, Text, StyleSheet } from 'react-native'
 import {
   collection,
   onSnapshot,
@@ -16,10 +7,12 @@ import {
   query,
   where,
 } from 'firebase/firestore'
+import { ScrollView } from 'react-native-gesture-handler'
+
 import { database } from '../../services/firebaseConfig'
 import { useAuth } from '../../hooks/useAuth'
+
 import { ISighting } from '../../interfaces/sighting.interface'
-import { ScrollView } from 'react-native-gesture-handler'
 import { SightingItemSkeleton } from '../../components/SightingItem/SightinItemSkeleton'
 import { SightingItem } from '../../components/SightingItem/SightinItem'
 import Button from '../../components/Button/Button'
@@ -28,7 +21,7 @@ export const MyReports = ({ navigation }) => {
   const { currentUser } = useAuth()
   const [items, setItems] = useState<ISighting[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [isEmpty, setIsEmpty] = useState(false) // Nuevo estado para controlar si la lista está vacía
+  const [isEmpty, setIsEmpty] = useState<boolean>(false)
 
   useEffect(() => {
     if (currentUser) {
@@ -44,9 +37,8 @@ export const MyReports = ({ navigation }) => {
           ...(doc.data() as ISighting),
           id: doc.id,
         }))
-        console.log(data)
         setItems(data)
-        setIsEmpty(data.length === 0) // Establece isEmpty basado en si hay datos
+        setIsEmpty(data.length === 0)
         setLoading(false)
       })
 
@@ -60,7 +52,7 @@ export const MyReports = ({ navigation }) => {
     <View style={styles.container}>
       {loading ? (
         [0, 1, 2].map((index) => <SightingItemSkeleton key={index} />)
-      ) : isEmpty ? ( // Verifica si la lista está vacía
+      ) : isEmpty ? (
         <View style={styles.containerInfo}>
           <Text style={styles.defaultText}>
             Aún no has reportado avistamiento de algún ave

@@ -6,11 +6,11 @@ interface DetailItemProps {
   name: string
 }
 
-const DetailItem = ({ label, name }: DetailItemProps) => {
+export const DetailItem = ({ label, name }: DetailItemProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}> {label} </Text>
-      <Text style={styles.value}> {name} </Text>
+      <Text style={styles.value}> {name || 'No se indica'} </Text>
     </View>
   )
 }

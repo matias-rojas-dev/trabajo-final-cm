@@ -50,7 +50,6 @@ export const CameraContainer = ({ route }) => {
   const takePicture = async () => {
     if (!camera) return
     const photo = await camera.takePictureAsync()
-    console.log(photo)
     setFileUri(photo.uri)
     setPreviewVisible(true)
     setCapturedImage(photo)

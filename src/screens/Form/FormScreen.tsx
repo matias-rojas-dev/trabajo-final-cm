@@ -5,32 +5,31 @@ import {
   View,
   StyleSheet,
   Text,
-  Button as RNButton,
   Alert,
   Image,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native'
-import { ISighting } from '../../interfaces/sighting.interface'
-import { Input } from '../../components/Input/Input'
-import { getLabel } from '../../utils/data/getLabel'
-import Button from '../../components/Button/Button'
+import { useNavigation } from '@react-navigation/native'
+
 import { addDoc, collection } from 'firebase/firestore'
 import { database, uploadFile } from '../../services/firebaseConfig'
-import { useNavigation } from '@react-navigation/native'
+
+import { Input } from '../../components/Input/Input'
 import useLocation from '../../hooks/useLocation'
 import { useAuth } from '../../hooks/useAuth'
-import { defaultSighting } from '../../utils/data/defaultSighting'
-import { resetForm } from '../../utils/functions/resetForm'
+import Button from '../../components/Button/Button'
 
-interface Location {
-  latitude: number
-  longitude: number
-}
+import { resetForm } from '../../utils/functions/resetForm'
+import { defaultSighting } from '../../utils/data/defaultSighting'
+import { ISighting } from '../../interfaces/sighting.interface'
+import { getLabel } from '../../utils/data/getLabel'
+import { getCurrentTimestamp } from '../../utils/functions/getCurrentTime'
 
 export const FormScreen: React.FC = () => {
   const navigation = useNavigation()
   const { currentUser } = useAuth()
+
   const { location, error: locationError, getLocationRegion } = useLocation()
   const [imageUri, setImageUri] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -47,12 +46,13 @@ export const FormScreen: React.FC = () => {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      // const uriFile = await uploadFile(imageUri)
+      const uriFile = await uploadFile(imageUri)
       await addDoc(collection(database, 'florayfauna'), {
-        // ...sighting,
-        // image: uriFile,
         ...sighting,
+        image: uriFile,
         userId: currentUser?.uid,
+        lastsighting: getCurrentTimestamp(),
+        region: 'Región Metropolitana',
       })
 
       Alert.alert('Éxito', 'Avistamiento registrado con éxito.', [
@@ -76,8 +76,8 @@ export const FormScreen: React.FC = () => {
     if (location) {
       const fetchRegion = async () => {
         const regionName = await getLocationRegion(
-          location.coords.latitude,
-          location.coords.longitude
+          location.coords.latitude || 0,
+          location.coords.longitude || 0
         )
         setSighting((prevSighting) => ({
           ...prevSighting,
@@ -92,7 +92,6 @@ export const FormScreen: React.FC = () => {
       fetchRegion()
     }
   }, [location, getLocationRegion])
-
   return (
     <SafeAreaView style={styles.safeArea}>
       {loading ? (
@@ -106,21 +105,29 @@ export const FormScreen: React.FC = () => {
               <Image source={{ uri: imageUri }} style={styles.capturedImage} />
             </View>
           ) : (
-            <TouchableOpacity
-              style={styles.cameraButton}
-              onPress={() =>
-                navigation.navigate('CameraContainer', {
-                  onPhotoCaptured: handlePhotoCaptured,
-                })
-              }
-            >
-              <Text style={styles.cameraButtonText}>Open Camera</Text>
-            </TouchableOpacity>
+            <View style={styles.cameraContainer}>
+              <TouchableOpacity
+                style={styles.cameraButton}
+                onPress={() =>
+                  navigation.navigate('CameraContainer', {
+                    onPhotoCaptured: handlePhotoCaptured,
+                  })
+                }
+              >
+                <Text style={styles.cameraButtonText}>Open Camera</Text>
+              </TouchableOpacity>
+            </View>
           )}
           <ScrollView style={styles.scrollView}>
             <View style={styles.container}>
               {Object.keys(sighting)
-                .filter((key) => key !== 'id' && key !== 'image')
+                .filter(
+                  (key) =>
+                    key !== 'id' &&
+                    key !== 'image' &&
+                    key !== 'userId' &&
+                    key !== 'region'
+                )
                 .map((key, index) => {
                   if (typeof sighting[key as keyof ISighting] === 'string') {
                     return (
@@ -175,6 +182,11 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  cameraContainer: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+  },
   capture: {
     flex: 0,
     backgroundColor: '#fff',
@@ -190,6 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     marginVertical: 10,
+    width: '50%',
   },
   cameraButtonText: {
     color: '#FFFFFF',

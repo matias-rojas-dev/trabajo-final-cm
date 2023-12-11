@@ -16,11 +16,8 @@ import { ISighting } from '../../interfaces/sighting.interface'
 import { SightingItemSkeleton } from '../../components/SightingItem/SightinItemSkeleton'
 import { useNavigation } from '@react-navigation/native'
 import { DEFAULTIMG } from '../../imports/images/images.imports'
-import { useAuth } from '../../hooks/useAuth'
 
 export const MainScreen: React.FC = () => {
-  const { currentUser } = useAuth()
-  console.log(currentUser)
   const navigation = useNavigation()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [items, setItems] = useState<ISighting[]>([])
@@ -69,8 +66,9 @@ export const MainScreen: React.FC = () => {
           >
             <View style={styles.markerContainer}>
               <Image
-                // source={{ uri: sighting.image }}
-                source={DEFAULTIMG}
+                source={{
+                  uri: sighting.image ? sighting.image : DEFAULTIMG,
+                }}
                 style={styles.markerImage}
                 onLoadEnd={() => onImageLoadEnd(sighting.id)}
               />

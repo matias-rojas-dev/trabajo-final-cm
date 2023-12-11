@@ -3,7 +3,7 @@ import { getAuth, signOut } from 'firebase/auth'
 import { useNavigation } from '@react-navigation/native'
 import { AuthContext } from '../../context/AuthContext'
 
-export const LogoutComponent = () => {
+export const LogoutComponent: React.FC = () => {
   const navigation = useNavigation()
   const { logout } = useContext(AuthContext)
 
@@ -11,10 +11,12 @@ export const LogoutComponent = () => {
     const auth = getAuth()
     signOut(auth)
       .then(() => {
-        logout()
+        logout({ email: '', uid: '', name: '' })
         navigation.navigate('LoginAndSignUp')
       })
-      .catch((error) => {})
+      .catch((error) => {
+        console.error('Error al cerrar sesión:', error)
+      })
   }, [logout, navigation])
 
   return null

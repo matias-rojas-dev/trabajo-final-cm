@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth'
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'
 import uuid from 'react-native-uuid'
 
 export const firebaseConfig = {
@@ -12,10 +14,16 @@ export const firebaseConfig = {
   appId: '1:1014905614315:web:dee91416adc9ced53e33ae',
   measurementId: 'G-QP79ET8WD3',
 }
+const app = initializeApp(firebaseConfig)
 
-initializeApp(firebaseConfig)
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+})
 
-const storage = getStorage(initializeApp(firebaseConfig))
+const storage = getStorage(app)
+const database = getFirestore(app)
+
+export { auth, database, storage }
 
 export async function uploadFile(fileUri: string): Promise<string> {
   const response = await fetch(fileUri)
@@ -28,5 +36,3 @@ export async function uploadFile(fileUri: string): Promise<string> {
 
   return uriFile
 }
-
-export const database = getFirestore()
