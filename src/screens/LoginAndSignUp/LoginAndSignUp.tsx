@@ -1,35 +1,43 @@
-import React from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-} from 'react-native'
-import Button from '../../components/Button/Button'
 
-export const LoginAndSignUp: React.FC = ({ navigation }) => {
+import React, { useState } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+
+import { initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
+
+import { firebaseConfig } from '../../services/firebaseConfig'
+import { CreateAccount } from '../../components/CreateAccount/CreateAccount'
+import { Loading } from '../Loading/Loading'
+import { Login } from '../../components/Login/Login'
+
+export const LoginAndSignUp: React.FC = () => {
+  const app = initializeApp(firebaseConfig)
+  const auth = getAuth(app)
+
+  const [isLogin, setIsLogin] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
+  if (loading) {
+    return <Loading />
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>BIENVENIDO A</Text>
-      <Text style={styles.subtitle}>Nature Guard</Text>
-      <TextInput
-        placeholder="E-mail"
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Contraseña"
-        secureTextEntry
-        style={styles.input}
-      />
-      <View style={styles.buttonContainer}>
-        <Button
-          text="Inicia Sesión"
-          buttonStyle={styles.buttonLogin}
-          textStyle={{ color: '#000' }}
-          onPress={() => navigation.navigate('Loading')}
-        />
+      {isLogin ? (
+        <Login auth={auth} setLoading={setLoading} />
+      ) : (
+        <CreateAccount setLoading={setLoading} />
+      )}
+      <View>
+        <TouchableOpacity
+          style={styles.textContainer}
+          onPress={() => setIsLogin(!isLogin)}
+        >
+          <Text style={styles.switchText}>
+            {' '}
+            {isLogin ? 'Crea una nueva cuenta' : 'Ya tengo una cuenta'}{' '}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -38,28 +46,51 @@ export const LoginAndSignUp: React.FC = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+  },
+  textContainer: {
+    display: 'flex',
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    height: 100,
+    textAlign: 'center',
+    backgroundColor: 'white',
+  },
+  switchText: {
+    backgroundColor: 'white',
+    color: '#5d9398',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  titlesContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    paddingLeft: 22,
+    paddingTop: 60,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 25,
+    color: '#333',
+    marginBottom: -10,
   },
   subtitle: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 32,
+    color: '#5d9398',
   },
   input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 20,
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 16,
+    fontSize: 16,
+    width: '80%',
+  },
+  button: {
+    backgroundColor: '#00ACEE',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: 'column',
@@ -76,7 +107,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 10, // Adjust the margin as necessary
+    marginBottom: 10,
     width: '100%',
   },
   buttonRegister: {
@@ -86,27 +117,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '100%',
   },
-  button: {
-    backgroundColor: '#009688',
-    padding: 12,
-    borderRadius: 5,
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
   buttonText: {
-    color: '#fff',
+    textAlign: 'center',
+    color: '#000',
     fontSize: 16,
-    fontWeight: 'bold',
   },
-  buttonOutline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#009688',
-  },
-  buttonOutlineText: {
-    color: '#009688',
+  textRegister: {
+    color: '#FFFFFF',
   },
 })
-
-export default LoginAndSignUp
