@@ -60,7 +60,7 @@ export const FormScreen: React.FC = () => {
           text: 'OK',
           onPress: () => {
             navigation.navigate('MainScreen')
-            resetForm(setSighting, setImageUri) // Usa la función importada
+            resetForm(setSighting, setImageUri)
           },
         },
       ])
